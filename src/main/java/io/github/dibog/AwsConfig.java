@@ -17,8 +17,11 @@
 package io.github.dibog;
 
 import com.amazonaws.ClientConfiguration;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.logs.AWSLogs;
 import com.amazonaws.services.logs.AWSLogsClientBuilder;
 
@@ -44,21 +47,41 @@ public class AwsConfig {
         this.profileName = profileName;
     }
 
+    private AWSCredentialsProvider createCredentialProvider(final String accessKeyIdEnv, final String secretAccessKeyBeijingEnv) {
+        return new AWSStaticCredentialsProvider(new AWSCredentials() {
+            @Override
+            public String getAWSAccessKeyId() {
+                return System.getenv(accessKeyIdEnv);
+            }
+
+            @Override
+            public String getAWSSecretKey() {
+                return System.getenv(secretAccessKeyBeijingEnv);
+            }
+        });
+    }
     public AWSLogs createAWSLogs() {
         AWSLogsClientBuilder builder = AWSLogsClientBuilder.standard();
 
-        if(region!=null) {
+        if (System.getenv("LOG_AWS_DEFAULT_REGION") != null) {
+            builder.withRegion(Regions.fromName(System.getenv("LOG_AWS_DEFAULT_REGION")));
+        } else if (System.getenv("AWS_DEFAULT_REGION") != null) {
+            builder.withRegion(Regions.fromName(System.getenv("AWS_DEFAULT_REGION")));
+        } else if (region != null) {
             builder.withRegion(region);
         }
 
-        if(clientConfig!=null) {
+        if (clientConfig != null) {
             builder.withClientConfiguration(clientConfig);
         }
 
-        if(profileName!=null) {
+        if (System.getenv("LOG_AWS_ACCESS_KEY_ID") != null) {
+            builder.withCredentials(createCredentialProvider("LOG_AWS_ACCESS_KEY_ID", "LOG_AWS_SECRET_ACCESS_KEY"));
+        } else if (System.getenv("AWS_ACCESS_KEY_ID") != null) {
+            builder.withCredentials(createCredentialProvider("AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"));
+        } else if (profileName != null) {
             builder.withCredentials(new ProfileCredentialsProvider(profileName));
-        }
-        else if(credentials!=null) {
+        } else if (credentials != null) {
             builder.withCredentials(new AWSStaticCredentialsProvider(credentials));
         }
 

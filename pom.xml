@@ -18,9 +18,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.dibog</groupId>
+    <groupId>com.github.blindpirate</groupId>
     <artifactId>cloudwatch-logback-appender</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.6.1</version>
 
 	<name>cloudwatch-logback-appender</name>
 	<description>Logback Appender which uses stores the log entries in ASW Cloudwatch logs.</description>
@@ -48,9 +48,9 @@
 	</developers>
 
     <properties>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <aws.version>1.11.292</aws.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <aws.version>1.12.3</aws.version>
         <logback.version>1.2.3</logback.version>
     </properties>
 
@@ -77,6 +77,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-logs</artifactId>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
@@ -128,11 +129,25 @@
                 <extensions>true</extensions>
 
                 <configuration>
-                    <serverId>ossrh</serverId>
+                    <serverId>sonatype-nexus-staging</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
 
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
@@ -164,21 +179,21 @@
     <distributionManagement>
 
         <snapshotRepository>
-            <id>ossrh</id>
+            <id>sonatype-nexus-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
 
         <repository>
-            <id>ossrh</id>
+            <id>sonatype-nexus-staging</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
         </repository>
     </distributionManagement>
 
     <scm>
-        <connection>scm:git:git://github.com/dibog/cloudwatch-logback-appender.git</connection>
-        <developerConnection>scm:git:git@github.com:dibog/cloudwatch-logback-appender.git</developerConnection>
-        <url>https://github.com/dibog/cloudwatch-logback</url>
-		<tag>cloudwatch-logback-appender-1.0.6</tag>
+        <connection>scm:git:git://github.com/blindpirate/cloudwatch-logback-appender.git</connection>
+        <developerConnection>scm:git:git@github.com:blindpirate/cloudwatch-logback-appender.git</developerConnection>
+        <url>https://github.com/blindpirate/cloudwatch-logback</url>
+		<tag>cloudwatch-logback-appender-1.0.6.1</tag>
     </scm>
 	
 	<profiles>
